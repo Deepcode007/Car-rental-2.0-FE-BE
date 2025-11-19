@@ -75,11 +75,11 @@ CAR RENTAL SYSTEM 2.0/
 
 🚀 Installation & Usage
 Clone the repository:
-    git clone [https://github.com/yourusername/car-rental-system.git](https://github.com/yourusername/car-rental-system.git)
+    git clone [https://github.com/Deepcode007/Car-rental-2.0-FE-BE.git](https://github.com/Deepcode007/Car-rental-2.0-FE-BE.git)
 
 
 Navigate to the project directory:
-    cd car-rental-system
+    cd Car-rental-2.0-FE-BE
 
 
 Running the Application:
@@ -87,7 +87,7 @@ Running the Application:
     Run the main script to start the server.
     node index.js
 
-    Then open your browser and navigate to http://localhost:3000 (or whichever port is defined).
+    Then open your browser and navigate to http://localhost:3010 (or whichever port is defined).
 
     Option B (If static/frontend only):
     Simply open welcome.html or login.html in your preferred web browser.
