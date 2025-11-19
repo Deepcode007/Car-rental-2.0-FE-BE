@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>Car Booking Simulator</title>
+        <link rel="stylesheet" href="forgot.css">
+    </head>
+    <body>
+        <div id="left">
+            <h1>OnlyCars™️</h1>
+            <span id="hello">Hello, <br>Welcome Back</span>
+            <input id="un" type="text" placeholder="Username">
+            <input id="uid" type="number" placeholder="userId">
+            <button id="seepwd" onclick="check()">Sign In</button>
+        </div>
+    </body>
+    <script>
+        localStorage.clear()
+        function check()
+        {
+            const un = document.getElementById("un").value.trim();
+            const uid = Number(document.getElementById("uid").value);
+            if((checkany(un)&& checkany(uid))==false)
+            {
+                alert("Fields cannot be empty!!")
+                return;
+            }
+
+            url="http://localhost:3010/seepwd"
+            fetch(url,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'username':un, 'userid':uid},
+            }).then(async x=> await x.json())
+            .then(y=>{
+                if(y.message=="not found")
+                {
+                    alert("Wrong credentials/combination!!\nTry again.")
+                    return;
+                }
+                alert("Your password is "+y.pwd)
+                alert("You are being redirected to login page!")
+                window.location.href = "http://localhost:3010/welcome";
+            })
+        }
+        // check any field empty or not
+        function checkany(x)
+        {
+            if(x=="" || x==null)return false
+            return true;
+        }
+    </script>
+</html>

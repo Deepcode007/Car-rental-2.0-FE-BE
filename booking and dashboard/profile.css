@@ -1,0 +1,150 @@
+html{
+    padding: 30px;
+    background-color: rgb(31, 50, 34);
+    color: white;
+}
+body{
+    background-color: rgb(10 22 24);
+    padding: 50px;
+    padding-top: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 20px;
+    background-image: 
+    linear-gradient(to bottom right, rgb(27 35 36),rgb(10 22 24))
+}
+
+#navbar{
+    display: flex;
+    flex-direction: row;
+    column-gap: 40px;
+    justify-content: space-evenly;
+    background-color: rgb(7, 39, 33);
+    width: auto;
+    padding: 8px;
+    /* padding-bottom: 8px; */
+    border-radius: 30px;
+    margin-bottom: 50px;
+}
+
+#navs{
+    color: rgb(203, 203, 207);
+    font-size: 20;
+    background-color: rgb(10 11 15);
+    border-radius: 20px;
+    border: transparent;
+    height: 40px;
+    width: auto;
+    /* justify-content: center; */
+    align-content: center;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    box-shadow: 0 0 0px ;
+  transition: box-shadow 0.3s ease-out;
+}
+#navs:hover{
+    box-shadow:  0 0 20px rgb(7, 21, 219), 0 0 80px rgb(15, 61, 188);
+}
+
+
+#all{
+    padding: 40px;
+    padding-top: 0;
+    background-color: rgb(19 31 33);
+    color: white;
+    width: 550;
+    border-radius: 20px;
+    border: 2px solid #1e282a;
+    font-family: monospace;
+}
+#all:hover{
+    border-color: #263336;
+}
+
+#a1,#a2{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+#npwd,#change, #del{
+    border-radius: 20px;
+    border-color: transparent;
+    height: 50px;
+}
+#npwd{
+    width: 300px;
+    background-color: rgb(215, 208, 208);
+    font-size: 20;
+    padding-left: 10%;
+    box-shadow: 0 0 0px ;
+  transition: box-shadow 0.3s ease-out;
+  outline: none;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#npwd:hover{
+    box-shadow: 0 0 20px rgb(16, 53, 203), 0 0 20px rgb(71, 67, 67);
+}
+
+#change, #del{
+    width: 100px;
+    font-size: 20;
+    color: rgb(255, 255, 255);
+    background-color: rgb(193, 33, 238);
+    border-width: 0px;
+    position: relative;
+    background: linear-gradient(to bottom, #2b5977, #d67310);
+    outline: none;
+}
+
+#change::after {
+    font-size: 20;
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to right, rgb(221, 190, 16), #2b5977);
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  border-radius: inherit;
+}
+#change:hover::after,#change:focus::after{
+  opacity: 1;
+  content: "Change";
+  align-content: center;
+}
+
+#del{
+
+    width: 100px;
+    font-size: 20;
+    color: rgb(255, 255, 255);
+    /* background-color: rgb(193, 33, 238); */
+    border-width: 0px;
+    position: relative;
+    background: linear-gradient(to bottom right, #8c8d8d, #100f0f);
+    outline: none;
+}
+#del::after{
+
+    font-size: 20;
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to right, rgb(255, 255, 255), rgb(88, 85, 85), rgb(41, 38, 38), rgb(0, 0, 0));
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    border-radius: inherit;
+}
+#del:hover::after,#del:focus::after{
+  opacity: 1;
+  content: "Delete";
+  align-content: center;
+}

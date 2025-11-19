@@ -1,0 +1,194 @@
+<html>
+    <head id="head">
+        <title>Logged in page</title>
+        <link rel="stylesheet" href="dashboard.css">
+    </head>
+    <body>
+        <div  style=" width:100%; display: flex; flex-direction: row; justify-content: space-between; "><h1>Dashboard</h1><h1>OnlyCars™️</h1></div>
+        <div id="navbar">
+            <button id="navs" onclick="book()">Book a car</button>
+            <button id="navs" onclick="update()">Update a Booking</button>
+            <button id="navs" onclick="del()">Delete a Booking</button>
+            <button id="navs" onclick="summary()">See Summary</button>
+            <button id="navs" onclick="profile()">Profile</button>
+            <button id="navs" onclick="logout()">Logout</button>
+        </div>
+        <div style="align-self: flex-start;">
+            <h2>Username: &nbsp;&nbsp;<span id="un"></span></h2>
+            <h2>User ID: &nbsp;&nbsp;<span id="uid"></span></h2>
+        </div><br><br>
+        <div id="a">
+            
+            <div id="a1">
+                <h3>Search a Booking:</h3>
+                Enter Booking id to search:
+                <br><br>
+                <form id="buttons">
+                    <input type="number" placeholder="Booking id" id="bid">
+                    <button id="dosearch" onclick="see1()">Search</button>
+                </form>
+                <ol id="search"></ol>
+
+            </div>
+            <div id="all"><h3>Bookings:</h3><br>
+                <ol id="list"></ol>
+            </div>
+
+        </div>
+    </body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function()
+        {
+            let un = localStorage.getItem("loginId");
+            document.getElementById("un").textContent=un;
+            let pwd= localStorage.getItem("password");
+            url="http://localhost:3010/checkuser"
+            fetch(url,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', "username":un,"password":pwd},
+            }).then(async x=> await x.json())
+            .then(y=>{
+                if(y.status==false)
+                {
+                    alert("Wrong credintials!! \nRedirecting to login page")
+                    localStorage.clear()
+                    window.location.href = "http://localhost:3010/welcome";
+                }
+                else{
+                    localStorage.setItem("userId",y.uid)
+                    document.getElementById("uid").textContent=y.uid;
+                    seeall()
+                }
+            })
+        });
+
+        // to avoid auto nreload after enter or search
+
+        document.getElementById("buttons").addEventListener("submit", function(event) {
+            event.preventDefault(); // Stops the default form submission and page reload
+            // Add your button click logic or other actions here
+        });   
+        // see all bookings
+        function seeall()
+        {
+            let uid=localStorage.getItem("userId")
+            let pwd=localStorage.getItem("password")
+            let un=localStorage.getItem("loginId")
+
+            let url='http://localhost:3010/bookings/'+uid
+            fetch(url, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', "username":un, "password":pwd }
+            }).then(async x=>await x.json())
+            .then(y=>{
+                let list=document.getElementById("list")
+                list.textContent=""
+                if(JSON.stringify(y)=='[]')
+                {
+                    list.textContent="No bookings present."
+                    return;
+                }
+                else if(y.message)
+                {
+                    list.textContent=y.message;
+                    return;
+                }
+                for(let i of y)
+                {
+                    let s="Booking Id: "+i.bookingId+" Car Name: "+i.carName+" Days: "+i.days+" Rent per day: "+i.rentPerDay+" Status: "+i.status;
+                    
+                    let n=document.createElement("li")
+                    n.textContent=s
+                    list.appendChild(n)
+                }
+            })
+        }
+        // see 1 booking
+        function see1()
+        {
+            let uid=localStorage.getItem("userId")
+            let un=localStorage.getItem("loginId")
+            let pwd=localStorage.getItem("password")
+            let bid=Number(document.getElementById("bid").value)
+            document.getElementById("bid").value=""
+            
+            if(bid=="")
+            {
+                document.getElementById("search").replaceChildren();
+                alert("Booking id cannot be empty!!")
+                return;
+            }
+
+            let url='http://localhost:3010/bookings/'+uid+"/"+bid
+
+            fetch(url, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', "username":un, "password":pwd }
+            }).then(async x=>await x.json())
+            .then(y=>{
+                let p=document.getElementById("search")
+                p.replaceChildren();
+                if(Object.keys(y).length==1)
+                {
+                    p.textContent=y.message;return;
+                }
+
+                let node=document.createElement("li")
+                node.textContent="Booking Id: \t"+y.bookingId
+                p.appendChild(node)
+                node=document.createElement("li")
+                node.textContent="Car Name: \t"+y.carName
+                p.appendChild(node)
+                node=document.createElement("li")
+                node.textContent="Days: \t"+y.days
+                p.appendChild(node)
+                node=document.createElement("li")
+                node.textContent="Rent Per Day: \t"+y.rentPerDay
+                p.appendChild(node)
+                node=document.createElement("li")
+                node.textContent="Total Cost: \t"+y.days*y.rentPerDay
+                p.appendChild(node)
+                node=document.createElement("li")
+                node.textContent="Status: \t"+y.status
+                p.appendChild(node)
+                // p.textContent="Booking Id: "+y.bookingId+" Car Name: "+y.carName+" Days: "+y.days+" Rent per day: "+y.rentPerDay+" Status: "+y.status;
+            })
+        }
+
+        // proflie
+        function profile()
+        { window.location.href="http://localhost:3010/profile"}
+
+        //logout
+        function logout()
+        {
+            localStorage.clear()
+            alert("You are successfully logged out!! \n Redirecting to Login page")
+            window.location.href="http://localhost:3010/welcome";
+        }
+
+        // book a car
+        function book()
+        {
+            window.location.href="http://localhost:3010/book";
+        }
+
+        // delete a booking
+        function del()
+        {
+            window.location.href = "http://localhost:3010/delbook";
+        }
+
+        //update booking
+        function update()
+        {
+            window.location.href= "http://localhost:3010/update";
+        }
+
+        //see summary
+        function summary()
+        {
+            window.location.href= "http://localhost:3010/summary";
+        }
+    </script>
+</html>

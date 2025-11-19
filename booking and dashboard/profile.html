@@ -1,0 +1,122 @@
+<html>
+    <head id="head">
+        <title>Profile page</title>
+        <link rel="stylesheet" href="profile.css">
+    </head>
+    <body>
+        <div  style=" width:100%; display: flex; flex-direction: row; justify-content: space-between; "><h1>My Profile</h1><h1>OnlyCars™️</h1></div>
+        <div id="navbar">
+            <button id="navs" onclick="back()">Back</button>
+            <button id="navs" onclick="logout()">Logout</button>
+        </div>
+        <div style="align-self: flex-start;">
+            <h2>Username: &nbsp;&nbsp;<span id="un"></span></h2>
+            <h2>User ID: &nbsp;&nbsp;<span id="uid"></span></h2>
+        </div><br><br>
+
+        <div id="all">
+            <h3 style="font-size: 20;">Change Password:</h3><br>
+            <div id="a1">
+                <input type="text" placeholder="New password" id="npwd"><button id="change" onclick="change()">Change</button>
+            </div><br>
+            <h3>Delete Profile:</h3>
+            <div id="a2">
+                <article style="display: flex; align-self: center;">All your bookings will be deleted as well.</article>
+                <button onclick="del()" id="del">Delete</button>
+            </div>
+        </div>
+
+    </body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function()
+        {
+            let un = localStorage.getItem("loginId");
+            document.getElementById("un").textContent=un;
+            let uid = localStorage.getItem("userId");
+            document.getElementById("uid").textContent=uid;
+            let pwd= localStorage.getItem("password");
+            url="http://localhost:3010/checkuser"
+            fetch(url,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', "username":un,"password":pwd},
+            }).then(async x=> await x.json())
+            .then(y=>{
+                if(y.status==false)
+                {
+                    alert("Wrong credintials!! \nRedirecting to login page")
+                    localStorage.clear()
+                    window.location.href = "http://localhost:3010/welcome";
+                }
+            })
+        });
+
+        // to avoid auto nreload after enter or search
+
+        // document.getElementById("buttons").addEventListener("submit", function(event) {
+        //     event.preventDefault(); // Stops the default form submission and page reload
+        //     // Add your button click logic or other actions here
+        // });
+
+        //logout
+        function back()
+        {
+            window.location.href="http://localhost:3010/login";
+        }
+
+        //change password
+        function change()
+        {
+            let un = localStorage.getItem("loginId");
+            let npwd= document.getElementById("npwd").value.trim();
+            let pwd= localStorage.getItem("password");
+            let uid= localStorage.getItem("userId");
+            if(npwd=="")
+            {
+                alert("New Password cannot be blank!!"); return;
+            }
+            if(npwd==pwd)
+            {
+                alert("New Password canot be same as old Password");
+                document.getElementById("npwd").value="";
+                return
+            }
+            let url="http://localhost:3010/profile/changepwd/"+uid;
+            fetch(url,{
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', "username":un, "password":pwd, "newpassword":npwd }
+            }).then(async x=> await x.json())
+            .then(y=>{
+                alert(y.message)
+                localStorage.setItem("password",npwd);
+            })
+        }
+
+        //delete
+        function del(){
+            let un = localStorage.getItem("loginId");
+            let pwd= localStorage.getItem("password");
+
+            let url="http://localhost:3010/deluser"
+            fetch(url,{
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json', "username": un, "password": pwd}
+            }).then(async x=> await x.json())
+            .then(y=>{
+                if(y.message==false)
+                {
+                    alert("Error deleting user,\nContact admin!!"); return;
+                }
+                alert("User deleted successfully!!\nRedirecting to Login Page")
+                window.location.href="http://localhost:3010/welcome"
+            })
+        }
+
+        // logout
+        function logout()
+        {
+            localStorage.clear()
+            alert("You are successfully logged out!! \n Redirecting to Login page")
+            window.location.href="http://localhost:3010/welcome";
+        }
+    </script>
+</html>

@@ -1,0 +1,94 @@
+html{
+    
+    background-color: rgb(217, 212, 217);
+}
+body{
+    background-color: rgb(255, 255, 255);
+    margin: 60px;
+    border-radius: 20px;
+    padding: 50px;
+    display: flex;
+    font-family: Arial, Helvetica, sans-serif;
+    letter-spacing: -0.8px;
+    /* background-clip: padding-box, border-box;
+  background-image: 
+    linear-gradient(to bottom right, #fa831400,rgb(119 54 255)) */
+}
+#left{
+    display: flex;
+    flex-direction: column;
+    width: 505px;
+    padding-right: 250px;
+    margin-left: 50px;
+}
+#right{
+    display: flex;
+    flex-direction: column;
+    width: 755px;  
+}
+#hello{
+    font-weight: 600;
+    font-size: 50;
+    letter-spacing: -3px;
+    margin-top: 50px;
+    margin-bottom: 25px;
+}
+
+#un,#pwd{
+    margin-bottom: 8px;
+    height: 50px;
+    width: 400px;
+    font-size: 14;
+    font-weight: 600;
+    padding: 13px;
+    padding-left: 20px;
+    border-radius: 8px;
+    border-width: 1.2px;
+    border: solid rgb(225 225 225);
+}
+
+#forgot{
+    display: flex;
+    flex-direction:row;
+    column-gap: 160px;
+    margin-bottom: 50px;
+    margin-top: 8px;
+}
+#checkbox{
+    accent-color: rgb(119 54 255);
+    transform: scale(1.2);
+}
+#fpwd{
+    text-decoration: none;
+    color: rgb(145, 146, 147);
+}
+#signin{
+    width: 120px;
+    height: 45px;
+    border-radius: 6px;
+    border: transparent;
+    background-color: rgb(119 54 255);
+    color: white;
+}
+
+#noacc{
+    margin-top: 65px;
+    color: rgb(145, 146, 147);
+}
+#signup{
+    color: rgb(119 54 255);
+    font-weight: 900;
+    text-decoration: none;
+}
+#hi{
+    color: rgba(94, 98, 100, 0.584);
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    margin-bottom: 75px;
+}
+#img{
+    border-radius: 15px;
+}
+h3{
+    font-family: 'Courier New', Courier, monospace;
+    color: rgb(219, 117, 34);
+}

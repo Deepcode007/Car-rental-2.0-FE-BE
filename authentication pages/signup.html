@@ -1,0 +1,72 @@
+<html>
+    <head>
+        <title>Car Booking Simulator</title>
+        <link rel="stylesheet" href="signup.css">
+        <h1>OnlyCars™️</h1>
+    </head>
+    <body>
+        <div>
+            <div  style=" width:100%; display: flex; flex-direction: column; justify-content: space-between; "><h2>Welcome to OnlyCars™️</h2><h3>Ready to start your journey?</h3></div>
+
+            <div id="div">
+            <input placeholder="Username" id="un" type="text">
+            <input placeholder="Password" id="pwd" type="password">
+            <button onclick="signup()" id="signup">Sign-up</button>
+            </div>
+            <span id="res"></span>
+        </div>
+    </body>
+    <script>
+        function signup()
+        {
+            let un=document.getElementById("un").value.trim();
+            let pwd=document.getElementById("pwd").value.trim();
+
+            if(un=="" || pwd=="")
+            {
+                alert("Compulsory fields cannot be empty!!")
+                return;
+            }
+            fetch('http://localhost:3010/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(
+                    {
+                        username: un,
+                        password: pwd,
+                    }
+                )
+            }).then(x=>x.json())
+            .then(data=>{
+                let res=document.getElementById("res")
+                if(Object.keys(data).length==1)
+                {
+                    res.innerHTML=data.message;
+                    document.getElementById("un").value="";
+                    document.getElementById("pwd").value="";
+                    return;
+                }
+                res.innerHTML=data.message+"<br> user id: "+data.userId
+                localStorage.setItem("loginId",un)
+                localStorage.setItem("password",pwd)
+                localStorage.setItem("userId",data.userId)
+                let login=document.createElement("button")
+                // <button onclick="login()">Login</button>
+                login.textContent="Login"
+                login.addEventListener("click",()=>{
+                    if(localStorage.getItem("loginId")==null)
+                    {
+                        alert("Enter username and password to signup and login!!")
+                        return;
+                    }
+                    window.location.href = "http://localhost:3010/login"; 
+                })
+                login.setAttribute("id","login");
+                console.log(login)
+
+                document.getElementById("div").appendChild(login)
+            })
+        }
+
+    </script>
+</html>

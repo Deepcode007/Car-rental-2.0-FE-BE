@@ -1,0 +1,182 @@
+<html>
+    <head id="head">
+        <title>Booking page</title>
+        <link rel="stylesheet" href="update.css">
+    </head>
+    <body>
+        <div  style=" width:100%; display: flex; flex-direction: row; justify-content: space-between; "><h1>Update Booking</h1><h1>OnlyCars™️</h1></div>
+        <div id="navbar">
+            <button id="navs" onclick="back()">Back</button>
+            <button id="navs" onclick="logout()">Logout</button>
+        </div>
+        <div style="align-self: flex-start;">
+            <h2>Username: &nbsp;&nbsp;<span id="un"></span></h2>
+            <h2>User ID: &nbsp;&nbsp;<span id="uid"></span></h2>
+        </div>
+        
+        <div id="top" style="display: flex; flex-direction: row; column-gap: 70px;">
+            <div id="all">
+                <h3 style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">
+                    Update whole booking
+                </h3>
+                <div class="a1">
+                    <h3>Enter Booking id:</h3>
+                    <input type="number" placeholder="Booking Id" id="bid">
+                </div>
+                <div class="a1">
+                    <h3>Enter car name:</h3>
+                    <input type="text" placeholder="Car name" id="cname">
+                </div>
+                <div class="a1">
+                    <h3>Number of Days:</h3>
+                    <input type="number" placeholder="Days" id="days">
+                </div>
+                <div class="a1">
+                    <h3>Rate per Day:</h3>
+                    <input type="number" placeholder="Rate" id="rate">
+                </div>
+                <button onclick="update1()" id="book">Update</button>
+                <div id="msg"></div>
+            </div>
+            <div id="all">
+                <h3 style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">
+                    Update status:
+                </h3>
+                <div class="a1">
+                    <h3>Enter Booking id:</h3>
+                    <input type="number" placeholder="Booking Id" id="bid1">
+                </div>
+                <div class="a1">
+                    <span style="font-size: 20;">Status:</span>
+                    <select id="status">
+                        <option value="booked">1. Booked</option>
+                        <option value="cancelled">2. Cancelled</option>
+                        <option value="pending">3. Pending</option>
+                    </select>
+                </div>
+                <div id="msg1"></div>
+                <div id="btn">
+                    <button onclick="update2()" id="sts">Update Status</button>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function()
+        {
+            let un = localStorage.getItem("loginId");
+            document.getElementById("un").textContent=un;
+            let uid = localStorage.getItem("userId");
+            document.getElementById("uid").textContent=uid;
+            let pwd= localStorage.getItem("password");
+            url="http://localhost:3010/checkuser"
+            fetch(url,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', "username":un,"password":pwd},
+            }).then(async x=> await x.json())
+            .then(y=>{
+                if(y.status==false)
+                {
+                    alert("Wrong credintials!! \nRedirecting to login page")
+                    localStorage.clear()
+                    window.location.href = "http://localhost:3010/welcome";
+                }
+            })
+        });
+
+        // to avoid auto nreload after enter or search
+
+        // document.getElementById("buttons").addEventListener("submit", function(event) {
+        //     event.preventDefault(); // Stops the default form submission and page reload
+        //     // Add your button click logic or other actions here
+        // });
+
+        //logout
+        function back()
+        {
+            window.location.href="http://localhost:3010/login";
+        }
+
+        //change password
+        function update1()
+        {
+            let un = localStorage.getItem("loginId");
+            let pwd= localStorage.getItem("password");
+            let uid= localStorage.getItem("userId");
+
+            let cname= document.getElementById("cname").value.trim();
+            let days= document.getElementById("days").value
+            let bid= document.getElementById("bid").value
+            let rate= document.getElementById("rate").value
+
+            if( cname=="" || days=="" || rate=="" || bid=="")
+            {
+                alert("Fields cannot be empty!!")
+                return;
+            }
+            let url="http://localhost:3010/bookings/"+uid+'/'+bid;
+            console.log(url)
+            fetch(url,{
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', "username":un, "password":pwd},
+                body: JSON.stringify({
+                    "carName": cname,
+                    "days": days,
+                    "rentPerDay": rate
+                })
+            }).then(async x=> await x.json())
+            .then(y=>{
+                let s;
+                if(Object.keys(y).length==3) { s="Message: "+y.message+"\nBooking Id: "+y.bookingId+"\nTotal Cost: "+y.totalCost; }
+                else { s="Message: "+y.message; }
+
+                document.getElementById("msg").textContent=s;
+
+                document.getElementById("cname").value="";
+                document.getElementById("days").value=""
+                document.getElementById("rate").value=""
+                document.getElementById("bid").value="";
+            })
+        }
+
+        // logout
+        function logout()
+        {
+            localStorage.clear()
+            alert("You are successfully logged out!! \n Redirecting to Login page")
+            window.location.href="http://localhost:3010/welcome";
+        }
+
+        // update status
+
+        function update2()
+        {
+            let un = localStorage.getItem("loginId");
+            let pwd= localStorage.getItem("password");
+            let uid= localStorage.getItem("userId");
+
+            let bid= document.getElementById("bid1").value
+            let sts= document.getElementById("status").value;
+
+            if(bid=="")
+            {
+                alert("Booking Id cannot be empty!!")
+                return;
+            }
+            let url="http://localhost:3010/bookings/"+uid+'/'+bid+"/status";
+            console.log(url)
+            fetch(url,{
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', "username":un, "password":pwd},
+                body: JSON.stringify({
+                    "status":sts
+                })
+            }).then(async x=> await x.json())
+            .then(y=>{
+
+                document.getElementById("msg1").textContent=y.message;
+                document.getElementById("bid1").value="";
+            })
+        }
+    </script>
+</html>

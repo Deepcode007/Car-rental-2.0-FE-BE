@@ -1,0 +1,364 @@
+<html>
+    <head>
+        <title>Car Booking Simulator</title>
+        <h1>Car Booking Simulator</h1>
+    </head>
+    <body>
+        <Div><center><H3>Hi there, welcome to my page</H3></center></Div>
+        <center><Div>
+            Username:&nbsp;&nbsp;<input type="text" placeholder="Username" id="un">
+            Password:&nbsp;&nbsp;<input type="text" placeholder="Password" id="pwd">
+            User Id:&nbsp;&nbsp;<input type="number" placeholder="User Id" id="uid">
+        </Div></center>
+        <Div>1.<br>
+            See all Users<br>
+            <button onclick="Check()">Check</button>
+            <ol id="Userslist"></ol>
+        </Div>
+        <Div>2.<br>
+            Book a Car<br>
+            Car name:<input type="text" placeholder="Car name" id="cname"><br>
+            Number of Days<input type="number" placeholder="Days" id="day"><br>
+            Rent per Day<input type="number" placeholder="Rent Per Day" id="rate"><br>
+            <button onclick="addbooking()"><b>Book</b></button>
+            <article id="addbooking"></article>
+        </Div>
+        <Div>3.<br>
+            See your Bookings<br>
+            <button onclick="seeall()">Check</button>
+            <ol id="allbookings"></ol>
+        </Div>
+        <Div>4.<br>
+            Check a Booking<br>
+            Enter Booking Id:<input type="number" id="bid"><br>
+            <button onclick="see1()">Check</button>
+            <article id="1booking"></article>
+        </Div>
+        <Div>5.<br>
+            Update your Booking<br>
+            Enter Booking Id:<input type="number" id="bid1"><br>
+            Enter Car name:<input type="text" id="cname1"><br>
+            Enter Days:<input type="number" id="day1"><br>
+            Enter Rate per day:<input type="number" id="rate1">
+            <button onclick="update()">Update</button>
+            <article id="update"></article>
+        </Div>
+        <Div>6.<br>
+            Update Booking status<br>
+            Enter Booking Id:<input type="number" id="bid2"><br>
+            <select id="options">
+                <option value="booked">1. Booked</option>
+                <option value="cancelled">2. Cancel</option>
+                <option value="pending">3. Pending</option>
+            </select>
+            <button onclick="status()">Update Status</button>
+            <article id="status"></article>
+        </Div>
+        <Div>7.<br>
+            Delete Booking<br>
+            Enter Booking Id:<input type="number" id="bid3"><br>
+            <button onclick="del()">Delete</button>
+            <article id="delete"></article>
+        </Div>
+        <Div>8.<br>
+            User Summary<br>
+            <button onclick="summary()">See Summary</button>
+            <article id="summary"></article>
+        </Div>
+    </body>
+    <script>
+        //1. see all users.
+        function Check()
+        {
+            fetch('http://localhost:3010/users', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(async x=> await x.json())
+            .then(users=>{
+
+                let parent=document.getElementById("Userslist")
+                parent.innerHTML="";
+                if(users.length==0)
+                {
+                    parent.innerHTML="<b>No users present!!</b>"; return;
+                }
+                for(let i of users)
+                {
+                    let s="Username: "+i.username+"  UserId:  "+JSON.stringify(i.id)
+                    let n=document.createElement("li")
+                    n.textContent=s;
+                    parent.appendChild(n);
+                }
+                // parent.textContent="hii"
+            })
+        }
+        //2. add a booking
+        function addbooking()
+        {
+            let uid=document.getElementById("uid").value//
+            let un=document.getElementById("un").value.trim()//
+            let pwd=document.getElementById("pwd").value.trim()//
+            let rate=document.getElementById("rate").value.trim()
+            let day=document.getElementById("day").value
+            let cname=document.getElementById("cname").value.trim()
+            if(check(uid,un,pwd)==false)
+            {
+                return;
+            }
+            if((checkany(rate)&& checkany(day) && checkany(cname))==false)
+            {
+                alert("Booking details cannot be empty!!")
+                return;
+            }
+
+            let url='http://localhost:3010/bookings/'+uid
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', "username":un,"password":pwd},
+                body: JSON.stringify(
+                    {
+                        carName: cname,
+                        days: day,
+                        rentPerDay: rate
+                    }
+                )
+            }).then(async x=>await x.json())
+            .then(y=>{
+                document.getElementById("addbooking").textContent=y.message
+            })
+        }
+        //3. all bookings
+        function seeall()
+        {
+            let uid=document.getElementById("uid").value.trim()
+            let un=document.getElementById("un").value.trim()
+            let pwd=document.getElementById("pwd").value.trim()
+
+            if(check(uid,un,pwd)==false)
+            {
+                return;
+            }
+
+            let url='http://localhost:3010/bookings/'+uid
+            fetch(url, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', "username":un, "password":pwd }
+            }).then(async x=>await x.json())
+            .then(y=>{
+                let list=document.getElementById("allbookings")
+                list.textContent=""
+                if(JSON.stringify(y)=='[]')
+                {
+                    list.textContent="No bookings present."
+                    return;
+                }
+                else if(y.message)
+                {
+                    list.textContent=y.message;
+                    return;
+                }
+                for(let i of y)
+                {
+                    let s="Booking Id: "+i.bookingId+" Car Name: "+i.carName+" Days: "+i.days+" Rent per day: "+i.rentPerDay+" Status: "+i.status;
+                    
+                    let n=document.createElement("li")
+                    n.textContent=s
+                    list.appendChild(n)
+                }
+            })
+        }
+        //4.Get 1 booking
+        function see1()
+        {
+            let uid=document.getElementById("uid").value.trim()
+            let un=document.getElementById("un").value.trim()
+            let pwd=document.getElementById("pwd").value.trim()
+            let bid=document.getElementById("bid").value
+
+
+            if(check(uid,un,pwd)==false)
+            {
+                return;
+            }
+            if(checkany(bid)==false)
+            {
+                alert("Booking id cannot be empty!!")
+                return;
+            }
+
+            let url='http://localhost:3010/bookings/'+uid+"/"+bid
+
+            fetch(url, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', "username":un, "password":pwd }
+            }).then(async x=>await x.json())
+            .then(y=>{
+                let p=document.getElementById("1booking")
+                if(Object.keys(y).length==1)
+                {
+                    p.textContent=y.message;return;
+                }
+                p.textContent="Booking Id: "+y.bookingId+" Car Name: "+y.carName+" Days: "+y.days+" Rent per day: "+y.rentPerDay+" Status: "+y.status;
+            })
+        }
+        
+        //5. Update booking
+        function update()
+        {
+            let uid=document.getElementById("uid").value.trim()
+            let un=document.getElementById("un").value.trim()
+            let pwd=document.getElementById("pwd").value.trim()
+
+            let bid=document.getElementById("bid1").value
+            let rate=document.getElementById("rate1").value
+            let day=document.getElementById("day1").value
+            let cname=document.getElementById("cname1").value.trim()
+
+            if(check(uid,un,pwd)==false)
+            {
+                return;
+            }
+            if((checkany(rate)&& checkany(day) && checkany(cname) && checkany(bid))==false)
+            {
+                alert("Booking details cannot be empty!!")
+                return;
+            }
+
+            let url='http://localhost:3010/bookings/'+uid+"/"+bid;
+            console.log(url)
+            fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', "username":un,"password":pwd},
+                body: JSON.stringify(
+                    {
+                        carName: cname,
+                        days: day,
+                        rentPerDay: rate
+                    }
+                )
+            }).then(async x=> await x.json())
+            .then(y=>{
+                console.log(y)
+                let p=document.getElementById("update")
+                if(Object.keys(y).length==1)
+                {
+                    p.textContent=y.message; return;
+                }
+                p.textContent="Message: "+y.message+" Booking Id: "+y.bookingId+" Total Cost: "+y.totalCost;
+            })
+        }
+
+        //6. Update Status
+        function status()
+        {
+            let uid=document.getElementById("uid").value.trim()
+            let un=document.getElementById("un").value.trim()
+            let pwd=document.getElementById("pwd").value.trim()
+
+            let bid=document.getElementById("bid2").value
+            let sts=document.getElementById("options").value.trim()
+
+            if(check(uid,un,pwd)==false)
+            {
+                return;
+            }
+            if((checkany(bid)&& checkany(sts))==false)
+            {
+                alert("Booking id/status cannot be empty!!")
+                return;
+            }
+
+
+            let url='http://localhost:3010/bookings/'+uid+"/"+bid+"/status"
+            fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', "username":un,"password":pwd},
+                body: JSON.stringify(
+                    {
+                        status:sts
+                    }
+                )
+            }).then(async x=> await x.json())
+            .then(y=>{
+                let p=document.getElementById("status")
+                p.textContent=y.message
+            })
+        }
+
+        //7.Delete Booking
+        function del()
+        {
+            let uid=document.getElementById("uid").value.trim()
+            let un=document.getElementById("un").value.trim()
+            let pwd=document.getElementById("pwd").value.trim()
+
+            let bid=document.getElementById("bid3").value
+
+            if(check(uid,un,pwd)==false)
+            {
+                return;
+            }
+            if(checkany(bid)==false)
+            {
+                alert("Booking id cannot be empty!!")
+                return;
+            }
+
+            let url='http://localhost:3010/bookings/'+uid+"/"+bid
+            fetch(url, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json', "username":un,"password":pwd}
+            }).then(async x=> await x.json())
+            .then(y=>{
+                let p=document.getElementById("delete")
+                console.log(y.message)
+                p.textContent=y.message
+            })
+        }
+
+        //8. User Summary
+        function summary()
+        {
+            let uid=document.getElementById("uid").value.trim()
+            let un=document.getElementById("un").value.trim()
+            let pwd=document.getElementById("pwd").value.trim()
+
+            if(check(uid,un,pwd)==false)
+            {
+                return;
+            }
+
+            let url='http://localhost:3010/summary/'+uid
+            fetch(url, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', "username":un,"password":pwd}
+            }).then(async x=>await x.json())
+            .then(y=>{
+                let p=document.getElementById("summary")
+                if(Object.keys(y).length==1)
+                {
+                    p.textContent=y.message; return;
+                }
+                p.textContent="User Id: "+y.userId+" Username: "+y.username+" Total Bookings: "+y.totalBookings+" Total Cost: "+y.totalAmountSpent;
+            
+            })
+        }
+
+        // check if empty fields
+        function check(uid,un,pwd)
+        {
+            if(uid==""||un==""||pwd=="")
+            {
+                alert("Compulsory fields cannot be empty!!")
+                return false;
+            }
+            return true;
+        }
+        // check any field empty or not.
+        function checkany(x)
+        {
+            if(x=="" || x==null)return false
+            return true;
+        }
+    </script>
+</html>

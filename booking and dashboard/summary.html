@@ -1,0 +1,85 @@
+<html>
+    <head id="head">
+        <title>Profile page</title>
+        <link rel="stylesheet" href="summary.css">
+    </head>
+    <body>
+        <div  style=" width:100%; display: flex; flex-direction: row; justify-content: space-between; "><h1>My Profile</h1><h1>OnlyCars™️</h1></div>
+        <div id="navbar">
+            <button id="navs" onclick="back()">Back</button>
+            <button id="navs" onclick="logout()">Logout</button>
+        </div>
+        <div style="align-self: flex-start;">
+            <h2>Username: &nbsp;&nbsp;<span id="un"></span></h2>
+            <h2>User ID: &nbsp;&nbsp;<span id="uid"></span></h2>
+        </div><br><br>
+
+        <div class="all">
+            <span class="a1">
+                <div>Total Bookings:</div><span id="msg1"></span>
+            </span>
+            <span class="a1">
+                <div>Total Cost:</div><span id="msg2"></span>
+            </span>
+        </div>
+
+    </body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function()
+        {
+            let un = localStorage.getItem("loginId");
+            document.getElementById("un").textContent=un;
+            let uid = localStorage.getItem("userId");
+            document.getElementById("uid").textContent=uid;
+            let pwd= localStorage.getItem("password");
+            url="http://localhost:3010/checkuser"
+            fetch(url,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', "username":un,"password":pwd},
+            }).then(async x=> await x.json())
+            .then(y=>{
+                if(y.status==false)
+                {
+                    alert("Wrong credintials!! \nRedirecting to login page")
+                    localStorage.clear()
+                    window.location.href = "http://localhost:3010/welcome";
+                }
+            })
+            .then(()=>{
+                url="http://localhost:3010/summary/"+uid
+                fetch(url,{
+                    method: 'GET',
+                headers: { 'Content-Type': 'application/json', "username":un,"password":pwd},
+                }).then(async x=> await x.json())
+                .then(y=>{
+                    document.getElementById("msg1").textContent=y.totalBookings
+                    document.getElementById("msg2").textContent=y.totalAmountSpent
+                })
+            })
+
+        });
+
+        // to avoid auto nreload after enter or search
+
+        // document.getElementById("buttons").addEventListener("submit", function(event) {
+        //     event.preventDefault(); // Stops the default form submission and page reload
+        //     // Add your button click logic or other actions here
+        // });
+
+        //logout
+        function back()
+        {
+            window.location.href="http://localhost:3010/login";
+        }
+
+        
+
+        // logout
+        function logout()
+        {
+            localStorage.clear()
+            alert("You are successfully logged out!! \n Redirecting to Login page")
+            window.location.href="http://localhost:3010/welcome";
+        }
+    </script>
+</html>

@@ -1,0 +1,102 @@
+<html>
+    <head id="head">
+        <title>Booking page</title>
+        <link rel="stylesheet" href="del.css">
+    </head>
+    <body>
+        <div  style=" width:100%; display: flex; flex-direction: row; justify-content: space-between; "><h1>Booking</h1><h1>OnlyCars™️</h1></div>
+        <div id="navbar">
+            <button id="navs" onclick="back()">Back</button>
+            <button id="navs" onclick="logout()">Logout</button>
+        </div>
+        <div style="align-self: flex-start;">
+            <h2>Username: &nbsp;&nbsp;<span id="un"></span></h2>
+            <h2>User ID: &nbsp;&nbsp;<span id="uid"></span></h2>
+        </div>
+        <h3 style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">
+            Delete a booking
+        </h3>
+        <div id="all">
+            <div class="a1">
+                <h3>Enter Booking Id:</h3>
+                <input type="number" placeholder="Booking Id" id="bid">
+            </div>
+            <div class="a1">
+                <label for="checkbox"><input type="checkbox" id="checkbox">
+                    <span id="option" style="font-size: 15px;">I understand that the booking and all related data will be lost and cannot be undone.</span>
+                </label>
+            </div>
+            <button onclick="del()" id="book">Book</button>
+            <div id="msg"></div>
+        </div>
+
+    </body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function()
+        {
+            let un = localStorage.getItem("loginId");
+            document.getElementById("un").textContent=un;
+            let uid = localStorage.getItem("userId");
+            document.getElementById("uid").textContent=uid;
+            let pwd= localStorage.getItem("password");
+            url="http://localhost:3010/checkuser"
+            fetch(url,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', "username":un,"password":pwd},
+            }).then(async x=> await x.json())
+            .then(y=>{
+                if(y.status==false)
+                {
+                    alert("Wrong credintials!! \nRedirecting to login page")
+                    localStorage.clear()
+                    window.location.href = "http://localhost:3010/welcome";
+                }
+            })
+        });
+
+        //check checkbox
+        function check()
+        {
+            let check=document.getElementById("checkbox")
+            if(!check.checked) return false;
+        }
+        
+        //delete booking
+        function del(){
+            let un = localStorage.getItem("loginId");
+            let pwd= localStorage.getItem("password");
+            let uid= localStorage.getItem("userId");
+            let bid= document.getElementById("bid").value;
+
+            if(check()==false)
+            {
+                alert("Check the declaration to delete!!"); return;
+            }
+            if(bid=="")
+            { alert("Booking Id cannot be empty!!"); return; }
+
+            let url="http://localhost:3010/bookings/"+uid+'/'+bid
+            fetch(url,{
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json', "username": un, "password": pwd}
+            }).then(async x=> await x.json())
+            .then(y=>{
+                document.getElementById("msg").textContent=y.message;
+            })
+        }
+
+        //back
+        function back()
+        {
+            window.location.href="http://localhost:3010/login";
+        }
+
+        // logout
+        function logout()
+        {
+            localStorage.clear()
+            alert("You are successfully logged out!! \n Redirecting to Login page")
+            window.location.href="http://localhost:3010/welcome";
+        }
+    </script>
+</html>

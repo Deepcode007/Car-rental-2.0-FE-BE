@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <title>Car Booking Simulator</title>
+        <link rel="stylesheet" href="/welcome.css">
+    </head>
+    <body>
+        <div id="left">
+            <h1>OnlyCars™️</h1>
+            <span id="hello">Hello, <br>Welcome Back</span>
+            <span id="hi">Hey, are you ready for a thrilling journey?</span>
+            <input id="un" type="text" placeholder="Username">
+            <input id="pwd" type="password" placeholder="Password">
+            <div id="forgot">
+                <label for="checkbox"><input type="checkbox" id="checkbox">&nbsp;&nbsp;Remember me</label>
+                <a id="fpwd" href="http://localhost:3010/forgot">Forgot Password?</a>
+            </div>
+            <button id="signin" onclick="login()">Sign In</button>
+            <div id="noacc">Dont have an account? <a id="signup" type="image" href="http://localhost:3010/signup">Sign Up</a></div>
+        </div>
+        <div id="right" style="height: 100%; width: auto;"><img id="img" style="height: 100%; width: 100%;" src="/3201623.webp"></div>
+    </body>
+    <script>
+        localStorage.clear()
+
+        function login()
+        {
+            const loginId = document.getElementById("un").value.trim();
+            const password = document.getElementById("pwd").value.trim();
+            if((checkany(loginId)&& checkany(password))==false)
+            {
+                alert("Fields cannot be empty!!")
+                return;
+            }
+            localStorage.setItem("loginId", loginId);
+            localStorage.setItem("password", password);
+            window.location.href = "http://localhost:3010/login";
+        }
+        // check any field empty or not
+        function checkany(x)
+        {
+            if(x=="" || x==null)return false
+            return true;
+        }
+    </script>
+</html>
