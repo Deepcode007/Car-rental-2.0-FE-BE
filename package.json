@@ -1,0 +1,24 @@
+{
+  "name": "car-rental-system-2.0",
+  "version": "1.0.0",
+  "description": "🚗 Car Rental System 2.0 A web-based application designed to streamline the process of renting cars. This system allows users to register, book vehicles, manage their profiles, and view booking summaries, utilizing a lightweight file-based backend for data management.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Deepcode007/Car-rental-2.0-FE-BE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Deepcode007/Car-rental-2.0-FE-BE/issues"
+  },
+  "homepage": "https://github.com/Deepcode007/Car-rental-2.0-FE-BE#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
